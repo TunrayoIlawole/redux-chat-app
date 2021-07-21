@@ -1,6 +1,8 @@
 import { combineReducers, Reducer } from "redux";
 import { ThreadsReducer, ThreadsState } from "./thread/threads.reducer";
 import { UsersReducer, UsersState } from "./user/users.reducer";
+export * from './user/users.reducer';
+export * from './thread/threads.reducer';
 
 
 // An interface that holds all the states in the app
