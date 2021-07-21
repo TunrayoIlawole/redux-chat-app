@@ -122,3 +122,11 @@ export const getUnreadMessagesCount = createSelector(
         },
     0)
 );
+
+export const getAllMessages = createSelector(
+    getAllThreads,
+    ( threads: Thread[] ) => 
+    threads.reduce(
+        (messages, thread) => [...messages, ...thread.messages],
+    []).sort((m1, m2) => m1.sentAt - m2.sentAt)
+);
