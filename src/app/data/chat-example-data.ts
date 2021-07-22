@@ -47,6 +47,12 @@ const wait: User = {
   avatarSrc: 'assets/images/avatars/male-avatar-2.png'
 };
 
+const ninja: User = {
+  id: uuid(),
+  name: 'Ninja Bot',
+  avatarSrc: 'assets/images/avatars/male-avatar-4.png'
+};
+
 const tLadycap: Thread = {
   id: 'tLadycap',
   name: ladycap.name,
@@ -72,6 +78,13 @@ const tWait: Thread = {
   id: 'tWait',
   name: wait.name,
   avatarSrc: wait.avatarSrc,
+  messages: []
+};
+
+const tNinja: Thread = {
+  id: 'tNinja',
+  name: ninja.name,
+  avatarSrc: ninja.avatarSrc,
   messages: []
 };
 
@@ -114,6 +127,14 @@ export function ChatExampleData(store: Redux.Store<AppState>) {
     sentAt: moment().subtract(4, 'minutes').toDate(),
     text: `I\'ll wait however many seconds you send to me before responding.` +
       ` Try sending '3'`
+  }));
+
+  // create the ninja thread
+  store.dispatch(ThreadActions.addThread(tNinja));
+  store.dispatch(ThreadActions.addMessage(tNinja, {
+    author: ninja,
+    sentAt: moment().subtract(2, 'minutes').toDate(),
+    text: `I'll count the letters and special characters of whatever you send me`
   }));
 
   // select the first thread
@@ -160,13 +181,13 @@ export function ChatExampleData(store: Redux.Store<AppState>) {
             break;
           case tWait.id:
             let waitTime: number = parseInt(message.text, 10);
-            let reply: string;
+            let reply2: string;
 
             if (isNaN(waitTime)) {
               waitTime = 0;
-              reply = `I didn\'t understand ${message}. Try sending me a number`;
+              reply2 = `I didn\'t understand ${message}. Try sending me a number`;
             } else {
-              reply = `I waited ${waitTime} seconds to send you this.`;
+              reply2 = `I waited ${waitTime} seconds to send you this.`;
             }
 
             setTimeout(
@@ -177,6 +198,21 @@ export function ChatExampleData(store: Redux.Store<AppState>) {
                 }));
               },
               waitTime * 1000);
+
+            break;
+          case tNinja.id:
+            let reply: string;
+
+            if (!isNaN(message.text)) {
+              reply = `You cannot send a number. Try again`;
+            } else {
+              reply = `${message.text.trim().split('').length}`;
+            }
+
+            store.dispatch(ThreadActions.addMessage(tNinja, {
+              author: ninja,
+              text: reply
+            }));
 
             break;
           default:
